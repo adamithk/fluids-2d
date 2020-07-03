@@ -36,7 +36,7 @@ var Display = (function() {
 
         // set bias and scale for including range of negative values
         scaleNegative: function() {
-            var v = 0.2;
+            var v = 0.12;
             this.bias.set(v, v, v);
             this.scale.set(v, v, v);
         },
