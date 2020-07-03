@@ -35,7 +35,6 @@ var Splat = (function() {
         this.uniforms.gridSize.value = this.grid.size;
         this.uniforms.read.value = input.read;
         this.uniforms.color.value = color;
-        console.log(color);
         this.uniforms.point.value = point;
         this.uniforms.radius.value = this.radius;
 
