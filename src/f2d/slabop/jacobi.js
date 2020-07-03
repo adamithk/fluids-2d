@@ -1,0 +1,58 @@
+import SlabopBase from './slabopbase';
+
+var Jacobi = (function() {
+    "use strict";
+
+    Jacobi = function(fs, grid, iterations, alpha, beta) {
+        this.grid = grid;
+        this.iterations = iterations === undefined ? 50 : iterations;
+        this.alpha = alpha === undefined ? -1 : alpha;
+        this.beta = beta === undefined ? 4 : beta;
+
+        this.uniforms = {
+            x: {
+                type: "t"
+            },
+            b: {
+                type: "t"
+            },
+            gridSize: {
+                type: "v2"
+            },
+            alpha: {
+                type: "f"
+            },
+            beta: {
+                type: "f"
+            },
+        };
+
+        SlabopBase.call(this, fs, this.uniforms, grid);
+    };
+
+    Jacobi.prototype = Object.create(SlabopBase.prototype);
+    Jacobi.prototype.constructor = Jacobi;
+
+    Jacobi.prototype.compute = function(renderer, x, b, output, boundary, scale) {
+        for (var i = 0; i < this.iterations; i++) {
+            this.step(renderer, x, b, output);
+            boundary.compute(renderer, output, scale, output);
+        }
+    };
+
+    Jacobi.prototype.step = function(renderer, x, b, output) {
+        this.uniforms.x.value = x.read;
+        this.uniforms.b.value = b.read;
+        this.uniforms.gridSize.value = this.grid.size;
+        this.uniforms.alpha.value = this.alpha;
+        this.uniforms.beta.value = this.beta;
+
+        renderer.render(this.scene, this.camera, output.write, false);
+        output.swap();
+    };
+
+    return Jacobi;
+
+}());
+
+export default Jacobi;
